@@ -22,9 +22,12 @@ def decodingDFTData(DFTData):
     return DFTList
 
 if __name__ == "__main__":
+    _name=input("Drag etu file into this window:")
+    if _name[0]=='"' and _name[-1] == '"':
+        _name=_name[1:-1]
+    name=_name[:-4]
     
-    
-    with open("in.etu","rb") as fetu:
+    with open(name+".etu","rb") as fetu:
         X=decodingDFTData(fetu.read())
     for i in range(len(X)):#trange(len(NFTData),dynamic_ncols=True,ascii=True,smoothing=1,mininterval=0.25,unit="ticks",unit_scale=False,unit_divisor=1024):
         for k in range(len(X[0])):
@@ -40,8 +43,9 @@ if __name__ == "__main__":
     #B=b""
     #or i in trange(len(w),dynamic_ncols=True,ascii=True,smoothing=1,mininterval=0.25,unit="ticks",unit_scale=False,unit_divisor=1024):
         #B+= struct.pack("h",int(w[i]))
-    W=wave.open("out.etu.wav",mode='wb')
+    W=wave.open(name+".etu.wav",mode='wb')
     W.setframerate(fs)
     W.setnchannels(1)
     W.setsampwidth(2)
     W.writeframes(w)
+    input("Complete.")
