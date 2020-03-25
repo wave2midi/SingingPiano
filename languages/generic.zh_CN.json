@@ -1,0 +1,32 @@
+{
+	"zh_CN":{
+		"option.pitchwheel": "使用弯音轮调频",
+		"option.pchange_recorder":"在MIDI中使用竖笛音色",
+		"option.velocitylimit_min":"音符被记录的最小力度",
+		"title.tempo":"Tempo",
+		"option.freq.standard":"基准频率 (A=)",
+		"option.freq_value_custom":"自定义...",
+		"operation.browse":"浏览...",
+		"option.wavpath":"键入文件的路径或浏览",
+		"title.wavpath":"波形文件路径",
+		"filechooser.hint":"选择一个要转换的文件...",
+		"title.output":"输出栏",
+		"title.main":"Singingpiano 转换器",
+		"operation.convert_to_dft128":"转换至平均律数据文件",
+		"operation.convert_to_midi":"转换至MIDI",
+		"conversion.ready":"等待操作...",
+		"conversion.wave2midi.start":"开始转换波形文件到MIDI",
+		"conversion.wave2midi.complete":"转换完成",
+		"conversion.wave2dftdata.start":"开始转换波形文件到平均律数据",
+		"conversion.wave2dftdata.complete":"转换完成",
+		"conversion.read.wave":"解包波形...",
+		"conversion.read.dftdata":"解码平均律数据...",
+		"conversion.dft128.start":"通过平均律频数的DFT计算频谱...",
+		"conversion.dft128.complete":"频谱生成完毕",
+		"conversion.failed.file_unsupported":"不支持的文件格式：%{extension}",
+		"conversion.generate.midi.start":"生成MIDI对象...",
+		"conversion.generate.midi.complete":"写入MIDI文件，音符数：%{notecount}",
+		"conversion.generate.dftdata":"编码平均律数据..."
+		
+	}
+}

@@ -1,0 +1,2 @@
+python SingingpianoQt.pyw
+pause

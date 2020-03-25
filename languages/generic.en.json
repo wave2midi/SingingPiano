@@ -1,0 +1,32 @@
+{
+	"en":{
+		"option.pitchwheel": "Use pitchwheel to mod freq.",
+		"option.pchange_recorder":"Use recorder in MIDI output",
+		"option.velocitylimit_min":"Min. velocity for notes",
+		"title.tempo":"Tempo",
+		"option.freq.standard":"Pitch standard (A=)",
+		"option.freq_value_custom":"Custom...",
+		"operation.browse":"Browse...",
+		"option.wavpath":"Browse or type the path to file...",
+		"title.wavpath":"Waveform file path",
+		"filechooser.hint":"Choose a file to convert...",
+		"title.output":"Output",
+		"title.main":"Singingpiano Converter",
+		"operation.convert_to_dft128":"Convert to Equal-Tempered Data",
+		"operation.convert_to_midi":"Convert to MIDI",
+		"conversion.ready":"Waiting for operation...",
+		"conversion.wave2midi.start":"Start converting waveform to MIDI file",
+		"conversion.wave2midi.complete":"Conversion completed.",
+		"conversion.wave2dftdata.start":"Start converting waveform to Equal-Tempered data",
+		"conversion.wave2dftdata.complete":"Conversion completed",
+		"conversion.read.wave":"Unpacking waveform...",
+		"conversion.read.dftdata":"Decoding Equal-Tempered data...",
+		"conversion.dft128.start":"Calculating spectrogram using DFT with equal-tempered frequencies...",
+		"conversion.dft128.complete":"Spectrogram generated",
+		"conversion.failed.file_unsupported":"File format unsupported: %{extension}",
+		"conversion.generate.midi.start":"Generating MIDI object...",
+		"conversion.generate.midi.complete":"Writing MIDI file, notes:%{notecount}",
+		"conversion.generate.dftdata":"Encoding Equal-Tempered data..."
+		
+	}
+}
