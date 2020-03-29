@@ -15,14 +15,14 @@ def dft(xs,fs):
     return [sum((xs[k] * iexp(-2 * math.pi * k * f[i] / fs) for k in range(n)))
             for i in range(nf)]
 
-def dftinv(xs,fs,framesamp=0):
+def dftinv(xs,fs,framesamp=0,currentframe=0):
     "naive dft"
     
     f=libs.const.pitch
     nf=len(f)
     n = len(xs)
     return [sum((xs[k] * iexp(2 * math.pi * i * f[k] / fs) for k in range(nf))) / n
-            for i in range(framesamp)]
+            for i in range(currentframe,framesamp+currentframe)]
 
 def fft_(xs, n, start=0, stride=1):
     "cooley-turkey fft"

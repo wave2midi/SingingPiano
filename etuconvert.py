@@ -22,7 +22,8 @@ def decodingDFTData(DFTData):
     return DFTList
 
 if __name__ == "__main__":
-    _name=input("Drag etu file into this window:")
+    import sys
+    _name=sys.argv[1]#input("Drag etu file into this window:")
     if _name[0]=='"' and _name[-1] == '"':
         _name=_name[1:-1]
     name=_name[:-4]
@@ -37,8 +38,8 @@ if __name__ == "__main__":
             #if this_n >= 128:notesOverFlow+=1  
     T=len(X)*0.05
     fs = 44100
-    x=libs.myalgs.distft(array(X), fs, T, 0.05*4, 0.05)
-    w= array([round(j/16) for j in x],dtype="int16")
+    x=libs.myalgs.distft(array(X), fs, T, 0.05*2, 0.05)
+    w= array([round(j/32) for j in x],dtype="int16")
     print(max(w),min(w),max(x),min(x))
     #B=b""
     #or i in trange(len(w),dynamic_ncols=True,ascii=True,smoothing=1,mininterval=0.25,unit="ticks",unit_scale=False,unit_divisor=1024):

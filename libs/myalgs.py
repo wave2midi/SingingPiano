@@ -37,7 +37,7 @@ def distft(X, fs, T, framesz, hop):
     hopsamp = int(hop*fs)
     lx=(len(x)-framesamp)
     for n,i in enumerate(trange(0, lx, hopsamp,dynamic_ncols=True,ascii=True,smoothing=1,mininterval=0.25,unit="ticks",unit_scale=False,unit_divisor=1024)):
-        x[i:i+framesamp] += w*numpy.real(numpy.array(libs.mydft.idft128(tuple(X[n]),fs,440,framesamp)))
+        x[i:i+framesamp] += w*numpy.real(numpy.array(libs.mydft.idft128(tuple(X[n]),fs,440,framesamp,i)))
     return x
 
 def istft(X, fs, T, hop):
@@ -49,7 +49,7 @@ def istft(X, fs, T, hop):
     return x
 
 if __name__ == '__main__':
-    import pylab,nfft
+    #import pylab,nfft
     f0 = 440         # Compute the STFT of a 440 Hz sinusoid
     fs = 8000        # sampled at 8 kHz
     T = 5            # lasting 5 seconds
