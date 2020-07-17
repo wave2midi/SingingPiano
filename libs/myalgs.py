@@ -19,25 +19,33 @@ def stft(x, fs, framesz, hop, freqsize):
 def dstft(x, fs, framesz, hop, basicFreq=440,progressbarObject=None):
     framesamp = int(framesz*fs)
     hopsamp = int(hop*fs)
-    w = scipy.signal.windows.hann(framesamp)
-    X = []
-    for i in range(0, len(x)-framesamp, hopsamp):
+    w = scipy.signal.windows.gaussian(framesamp,hopsamp*0.4)#,sym=False)
+    X = numpy.zeros(len(range(0, len(x)-framesamp, hopsamp)))#X=[]
+    """for i in range(0, len(x)-framesamp, hopsamp):
         if (i//hopsamp)%int((((len(x)-framesamp)//hopsamp)/100.0)+0.5) == 0 and not progressbarObject==None:#progress display for gui
             #print(column,'\t',int(column/(len(NFTData)/100.0)+0.5),'%')
             progressbarObject.setProperty("value",i/(len(x)-framesamp))
-        X.append(mydft.dft128(tuple(w*x[i:i+framesamp]),fs,basicFreq))
-    X=numpy.array(X)
+        X.append(mydft.dft128(tuple(w*x[i:i+framesamp]),fs,basicFreq))"""
+    def it(i):
+        if (i//hopsamp)%int((((len(x)-framesamp)//hopsamp)/100.0)+0.5) == 0 and not progressbarObject==None:#progress display for gui
+            #print(column,'\t',int(column/(len(NFTData)/100.0)+0.5),'%')
+            progressbarObject.setProperty("value",i/(len(x)-framesamp))
+        return mydft.dft128(tuple(w*x[i:i+framesamp]),fs,basicFreq)
+    X = map(it, range(0, len(x)-framesamp, hopsamp))
+    X=numpy.array(list(X))
+    #X=numpy.array(X)
     if progressbarObject: progressbarObject.setProperty("value",1.0)
     return X
 
-def distft(X, fs, T, framesz, hop):
+def distft(X, fs, T, framesz, hop, basicFreq=440):
     x = numpy.zeros(int(T*fs))
     framesamp = int(framesz*fs)#X.shape[1]
-    w = scipy.signal.windows.hann(framesamp)
+    hopsamp = int(hop*fs)
+    w = scipy.signal.windows.gaussian(framesamp,hopsamp*0.4)#,sym=False)
     hopsamp = int(hop*fs)
     lx=(len(x)-framesamp)
     for n,i in enumerate(trange(0, lx, hopsamp,dynamic_ncols=True,ascii=True,smoothing=1,mininterval=0.25,unit="ticks",unit_scale=False,unit_divisor=1024)):
-        x[i:i+framesamp] += w*numpy.real(numpy.array(libs.mydft.idft128(tuple(X[n]),fs,440,framesamp,i)))
+        x[i:i+framesamp] += w*numpy.real(numpy.array(libs.mydft.idft128(tuple(X[n]) if len(X)>n else tuple(numpy.zeros(128)),fs,basicFreq,framesamp,i)))
     return x
 
 def istft(X, fs, T, hop):

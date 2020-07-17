@@ -26,7 +26,8 @@
 		"conversion.failed.file_unsupported":"不支持的文件格式：%{extension}",
 		"conversion.generate.midi.start":"生成MIDI对象...",
 		"conversion.generate.midi.complete":"写入MIDI文件，音符数：%{notecount}",
-		"conversion.generate.dftdata":"编码平均律数据..."
+		"conversion.generate.dftdata":"编码平均律数据...",
+		"conversion.wave2midi.error":"转换被取消，由于发生如下错误: \n%{error}"
 		
 	}
 }

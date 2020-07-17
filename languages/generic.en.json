@@ -26,7 +26,7 @@
 		"conversion.failed.file_unsupported":"File format unsupported: %{extension}",
 		"conversion.generate.midi.start":"Generating MIDI object...",
 		"conversion.generate.midi.complete":"Writing MIDI file, notes:%{notecount}",
-		"conversion.generate.dftdata":"Encoding Equal-Tempered data..."
-		
+		"conversion.generate.dftdata":"Encoding Equal-Tempered data...",
+		"conversion.wave2midi.error":"Conversion failed due to the following error(s): \n%{error}"
 	}
 }

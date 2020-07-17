@@ -1,6 +1,6 @@
 import libs
 import wave
-from numpy import array
+from numpy import array,log2
 import struct
 from tqdm import trange
 def decodingDFTData(DFTData):
@@ -29,25 +29,32 @@ if __name__ == "__main__":
     _name=sys.argv[1]#input("Drag etu file into this window:")
     if _name[0]=='"' and _name[-1] == '"':
         _name=_name[1:-1]
-    name=_name[:-4]
-    ticklength=0.05
-    with open(name+".etu","rb") as fetu:
-        X=decodingDFTData(fetu.read())
+    name=_name[:-5]
+    
+    with open(name+".mela","rb") as fetu:
+        X, BasicFreq, NFOffset, TicksPerSecond=libs.melacodec.decode(fetu.read())
+    ticklength=1/TicksPerSecond
     for i in range(len(X)):#trange(len(NFTData),dynamic_ncols=True,ascii=True,smoothing=1,mininterval=0.25,unit="ticks",unit_scale=False,unit_divisor=1024):
         for k in range(len(X[0])):
-            this_n=(X[i][k]*32)**2
+            #freq = libs.const.pitch[k]*BasicFreq/440
+            this_n=(X[i][k]*32*256)**2#*log2(freq/8)/3
             X[i][k]=this_n
             #imi.append(this_n)
             #if this_n >= 128:notesOverFlow+=1  
     T=len(X)*ticklength
     fs = 44100
-    x=libs.myalgs.distft(array(X), fs, T, ticklength*2, ticklength)
-    w= array([round(j/64) for j in x],dtype="int16")
+    x=libs.myalgs.distft(array(X), fs, T, ticklength*2, ticklength,basicFreq=BasicFreq)
+    def lim(x):
+        if x < -32768:return -32768
+        elif x >= 32768: return 32767
+        else: return x
+
+    w= array([lim(round(j/24)) for j in x],dtype="int16")
     print(max(w),min(w),max(x),min(x))
     #B=b""
     #or i in trange(len(w),dynamic_ncols=True,ascii=True,smoothing=1,mininterval=0.25,unit="ticks",unit_scale=False,unit_divisor=1024):
         #B+= struct.pack("h",int(w[i]))
-    W=wave.open(name+".etu.wav",mode='wb')
+    W=wave.open(name+".mela.wav",mode='wb')
     W.setframerate(fs)
     W.setnchannels(1)
     W.setsampwidth(2)

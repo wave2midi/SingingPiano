@@ -28,7 +28,7 @@ Rectangle {
         selectExisting:true
         selectFolder:false
         selectMultiple:true
-        nameFilters: ["Wave PCM (*.wav)", "Equal Tempered aUdio (*.etu)"]
+        nameFilters: ["Wave PCM (*.wav)", "Mel-Scaled Audio (*.mela)"]
         onAccepted: {
             console.log("qml:file selected")
             wavpath.text=browsewindow.fileUrl
@@ -37,6 +37,39 @@ Rectangle {
             console.log("qml:file canceled")
             //Qt.quit()
         }
+    }
+	MessageDialog{
+        id:bfinput
+        visible:false
+        title:"Choose a file to convert..."
+        //folder: shortcuts.document
+		
+        onAccepted: {
+            console.log("qml:custom basicgreq. selected")
+			comboBox.model = [bfinputfield.text,con.getSF(0),con.getSF(1),con.getSF(2)]
+			bfinput.visible = false
+		}
+            
+        onRejected: {
+            console.log("qml:custom basicfreq. canceled")
+            //Qt.quit()
+        }
+		ColumnLayout {
+				TextField {
+                    id: bfinputfield
+                    text: qsTr("440")
+                    Layout.preferredHeight: global.height / 480 * 50
+                    Layout.preferredWidth: parent.width
+                    //Layout.preferredWidth: global.width/640*106
+                }
+				Button {
+                id: bfbutton
+                text: "OK"
+                onClicked:{
+                    bfinput.accepted()
+                }
+				}
+		}
     }
     ColumnLayout {
         id: global
@@ -127,6 +160,14 @@ Rectangle {
                     id: comboBox
                     Layout.preferredHeight: global.height / 480 * 42
                     Layout.preferredWidth: parent.width
+					onActivated:{
+					if(comboBox.currentText==con.t("generic.option.freq_value_custom")){
+						
+						bfinput.visible = true
+						
+						
+					}
+					}
                 }
 
                 Text {

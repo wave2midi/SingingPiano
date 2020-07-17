@@ -13,83 +13,98 @@ import threading
 from singingpiano import *
 from urllib.request import url2pathname
 import locale
+import libs
 
 
-version="0.1.0beta"
+version="0.1.2beta"
 
 def wave2MIDI(filepath,basicFreq,tempo,lim,pitchwheel):
+    ticklength = 50
     def _print(s,*args,**kwargs):
         WorkDict["outputBuffer"].append(s)
         outputbuffer.setProperty("value",1.0)
     print=_print
-    print(i18n.t("generic.conversion.wave2midi.start"))
-    inputfname,extension = os.path.splitext(url2pathname(filepath[8:]))
-    if extension.lower() == ".wav":
+    def stderr(text):
+        print(i18n.t("generic.conversion.wave2midi.error",error=text))
+        enableButtons()
+    try:
+        print(i18n.t("generic.conversion.wave2midi.start"))
+        inputfname,extension = os.path.splitext(url2pathname(filepath[8:]))
+        if extension.lower() == ".wav":
+            print(i18n.t("generic.conversion.read.wave"))
+            progressbar.setProperty("indeterminate",False)
+    
+            PCM,framerate=wavefileReadUnpack(url2pathname(filepath[8:]),progressbarObject=progressbar)
+            #print(f"长度：{patt.length}")
+            progressbar.setProperty("value",0.0)
+    
+            print(i18n.t("generic.conversion.dft128.start"))
+            DFTData=DFT128(PCM,framerate,basicFreq=float(basicFreq),progressbarObject=progressbar)
+            print(i18n.t("generic.conversion.dft128.complete"))
+        elif extension.lower() == ".mela":
+            print(i18n.t("generic.conversion.read.dftdata"))
+            with open(url2pathname(filepath[8:]),"rb") as DB:
+                DFTBitStream = DB.read()
+            DFTData, basicFreq, NFOffset, TicksPerSecond = libs.melacodec.decode(DFTBitStream)
+            ticklength=1000/TicksPerSecond
+        else:
+            stderr(i18n.t("generic.conversion.failed.file_unsupported",extension=extension))
+            return False
+        print(i18n.t("generic.conversion.generate.midi.start"))
+        patt,notec=NFTData2MIDI(DFTData,tempo=int(tempo),
+            lim=lim,basicFreq=float(basicFreq),ticklength=ticklength,pitchwheel=pitchwheel,progressbarObject=progressbar)
+        print(i18n.t("generic.conversion.generate.midi.complete",notecount=notec))
+        progressbar.setProperty("value",0.0)
+        progressbar.setProperty("indeterminate",True)
+        patt.save(os.path.join(os.path.dirname(__file__),inputfname+".mid"))
+        progressbar.setProperty("indeterminate",False)
+        print(i18n.t("generic.conversion.wave2midi.complete"))
+        enableButtons()
+        return True
+    except Exception as e:
+        stderr(str(e))
+
+def wave2DFTData(filepath,basicFreq,tempo,lim,pitchwheel):
+    ticklength = 50
+    def _print(s,*args,**kwargs):
+        WorkDict["outputBuffer"].append(s)
+        outputbuffer.setProperty("value",1.0)
+    print=_print
+    def stderr(text):
+        print(i18n.t("generic.conversion.wave2midi.error",error=text))
+        enableButtons()
+    try:
+        print(i18n.t("generic.conversion.wave2dftdata.start"))
+        inputfname,extension = os.path.splitext(url2pathname(filepath[8:]))
+        if not extension.lower() == ".wav":
+            stderr(i18n.t("generic.conversion.failed.file_unsupported",extension=extension))
+            return False
+        
+        #print("y")
         print(i18n.t("generic.conversion.read.wave"))
         progressbar.setProperty("indeterminate",False)
     
         PCM,framerate=wavefileReadUnpack(url2pathname(filepath[8:]),progressbarObject=progressbar)
         #print(f"长度：{patt.length}")
         progressbar.setProperty("value",0.0)
-    
         print(i18n.t("generic.conversion.dft128.start"))
-        DFTData=DFT128(PCM,framerate,basicFreq=int(basicFreq),progressbarObject=progressbar)
+        DFTData=DFT128(PCM,framerate,basicFreq=int(basicFreq),progressbarObject=progressbar,ticklength=ticklength)
         print(i18n.t("generic.conversion.dft128.complete"))
-    elif extension.lower() == ".etu":
-        print(i18n.t("generic.conversion.read.dftdata"))
-        with open(url2pathname(filepath[8:]),"rb") as DB:
-            DFTBitStream = DB.read()
-        DFTData = decodingDFTData(DFTBitStream)
-    else:
-        print(i18n.t("generic.conversion.failed.file_unsupported",extension=extension))
-        enableButtons()
-        return False
-    print(i18n.t("generic.conversion.generate.midi.start"))
-    patt,notec=NFTData2MIDI(DFTData,tempo=int(tempo),
-        lim=lim,pitchwheel=pitchwheel,progressbarObject=progressbar)
-    print(i18n.t("generic.conversion.generate.midi.complete",notecount=notec))
-    progressbar.setProperty("value",0.0)
-    progressbar.setProperty("indeterminate",True)
-    patt.save(os.path.join(os.path.dirname(__file__),inputfname+".mid"))
-    progressbar.setProperty("indeterminate",False)
-    print(i18n.t("generic.conversion.wave2midi.complete"))
-    enableButtons()
-    return True
-
-def wave2DFTData(filepath,basicFreq,tempo,lim,pitchwheel):
-    def _print(s,*args,**kwargs):
-        WorkDict["outputBuffer"].append(s)
-        outputbuffer.setProperty("value",1.0)
-    print=_print
-    print(i18n.t("generic.conversion.wave2dftdata.start"))
-    inputfname,extension = os.path.splitext(url2pathname(filepath[8:]))
-    if not extension.lower() == ".wav":
-        print(i18n.t("generic.conversion.failed.file_unsupported",extension=extension))
-        return False
-        enableButtons()
-    #print("y")
-    print(i18n.t("generic.conversion.read.wave"))
-    progressbar.setProperty("indeterminate",False)
+        print(i18n.t("generic.conversion.generate.dftdata"))
+        patt = libs.melacodec.encode(DFTData, None, TicksPerSecond = 1/ticklength*1000, BasicFreq = int(basicFreq))
+        #print(f"音符数：{notec}")
+        progressbar.setProperty("value",0.0)
+        progressbar.setProperty("indeterminate",True)
     
-    PCM,framerate=wavefileReadUnpack(url2pathname(filepath[8:]),progressbarObject=progressbar)
-    #print(f"长度：{patt.length}")
-    progressbar.setProperty("value",0.0)
-    print(i18n.t("generic.conversion.dft128.start"))
-    DFTData=DFT128(PCM,framerate,basicFreq=int(basicFreq),progressbarObject=progressbar)
-    print(i18n.t("generic.conversion.dft128.complete"))
-    print(i18n.t("generic.conversion.generate.dftdata"))
-    patt = encodingDFTData(DFTData)
-    #print(f"音符数：{notec}")
-    progressbar.setProperty("value",0.0)
-    progressbar.setProperty("indeterminate",True)
-    
-    outputpath = os.path.join(os.path.dirname(__file__),inputfname+".etu")
-    with open(outputpath, "wb") as outf:
-        outf.write(patt)
-    progressbar.setProperty("indeterminate",False)
-    print(i18n.t("generic.conversion.wave2dftdata.complete"))
-    enableButtons()
-    return True
+        outputpath = os.path.join(os.path.dirname(__file__),inputfname+".mela")
+        with open(outputpath, "wb") as outf:
+            outf.write(patt)
+        progressbar.setProperty("indeterminate",False)
+        print(i18n.t("generic.conversion.wave2dftdata.complete"))
+        enableButtons()
+        return True
+    except Exception as e:
+        stderr(str(e))
     
 def encodingDFTData(DFTList):
     """version=0.1"""
@@ -186,8 +201,10 @@ if __name__ == "__main__":
     i18n.set('fallback',"en")
     try:
         i18n.load_path.append(os.path.join(dirname(__file__), 'languages'))
-    except:
-        pass
+        i18n.config.settings["file_format"]="json"
+        print(f"i18npath:{i18n.load_path}")
+    except Exception as e:
+        print(repr(e))
     
     APP = QGuiApplication(sys.argv)
     view = QQuickView()
@@ -215,11 +232,7 @@ if __name__ == "__main__":
     outputbuffer.setProperty("text",i18n.t("generic.conversion.ready"))
 
     buttons = view.rootObject().findChild(QObject,"global").findChild(QObject,"buttons")
-    #print(outputbuffer.property("text"))
-    #outputbuffer.outputSignal=Signal(str)
-    #outputbuffer.outputSignal.emit("text")
-    
+
     view.show()
     
     APP.exec_()
-    # print(9)

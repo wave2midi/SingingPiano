@@ -1,2 +1,8 @@
-python
-__pycache__
+# python
+**/__pycache__/
+
+#media format
+*.mela
+*.etu
+*.wav
+*.mid

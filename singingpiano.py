@@ -22,16 +22,28 @@ try:
     from math import sqrt,log,log2
     import wave 
     import struct
-    from numpy import zeros,array
+    from numpy import zeros,array,frombuffer,shape
+    import scipy.io.wavfile
 except:
     print("lack_of_dependencies")
     input()
     exit()
 
 
-
-
 def wavefileReadUnpack(filename,channelLR="",progressbarObject=None):
+    try:
+        wavefile = open(filename, 'r') # open for writing
+    except IOError as e:
+        print("file_doesntexist")
+        print(e)
+        return None,None
+    framerate,wavarr = scipy.io.wavfile.read(filename)
+    if len(shape(wavarr))!=1:
+        return wavarr.sum(axis=1)/2,framerate  
+    else: 
+        return array(wavarr),framerate
+
+def wavefileReadUnpack_Obsolete(filename,channelLR="",progressbarObject=None):
     try:
         wavefile = wave.open(filename, 'r') # open for writing
     except IOError as e:
@@ -83,7 +95,7 @@ def DFT128(RawPCM,framerate,basicFreq=440,ticklength=50,memoryerror="throw",prog
     sampleLength=len(RawPCM)/framerate
     print(f"sampleLength={sampleLength}")
     try:
-        NFTData=libs.myalgs.specgram(RawPCM, framerate, ticklength/1000.0*2, 
+        NFTData=libs.myalgs.specgram(RawPCM, framerate, ticklength/1000.0,#*2, 
         ticklength/1000.0, basicFreq=basicFreq,progressbarObject=progressbarObject)
     except MemoryError as e:
         print("memoryerror")
@@ -94,8 +106,11 @@ def DFT128(RawPCM,framerate,basicFreq=440,ticklength=50,memoryerror="throw",prog
     notesOverFlow=0
     for i in range(len(NFTData)):#trange(len(NFTData),dynamic_ncols=True,ascii=True,smoothing=1,mininterval=0.25,unit="ticks",unit_scale=False,unit_divisor=1024):
         for k in range(len(NFTData[0])):
-            this_n=sqrt(sqrt(NFTData[i][k]))/32
-            NFTData[i][k]=this_n
+            this_n=sqrt(sqrt(NFTData[i][k]))/8192
+            pitch = libs.const.pitch[k]*basicFreq/440
+            if pitch > 1/ticklength*1000 and pitch < framerate/2:                   #Information Theory Bounds
+                NFTData[i][k]=this_n
+            else:NFTData[i][k]=0
             #imi.append(this_n)
             if this_n >= 128:notesOverFlow+=1  
     print(f"Overflowed:{notesOverFlow}")
@@ -128,6 +143,7 @@ def NFTData2MIDI(NFTData,lim=0,tempo=500,trackcount=8,ticklength=50,basicFreq=44
     patt.ticks_per_beat=500
     notec=0
     last_col=0
+    amplifier=128
     onetick=round(ticklength*(tempo/500))
     for i in range(trackcount):
         l=i if i<4 else 8 + i
@@ -144,7 +160,7 @@ def NFTData2MIDI(NFTData,lim=0,tempo=500,trackcount=8,ticklength=50,basicFreq=44
             progressbarObject.setProperty("value",int(column/(len(NFTData)/100.0)+0.5)/100.0)
         for row in range(len(NFTData[0])):
             #print(0)
-            vol = NFTData[column][row]
+            vol = NFTData[column][row]*amplifier
             if round(vol) > lim and vol >= 0:
                 for l in range(4):
                     if vol <= 32+32*l and vol > 32*l:
