@@ -1,7 +1,9 @@
 import struct
 import ctypes
 import math
-from tqdm import trange,tqdm
+#from tqdm import trange
+def trange(*args,**kwargs):
+    return range(*args)
 
 MAGIC_NUMBER = b"MelA\xcd\xee\xca\xd3"
 

@@ -16,7 +16,7 @@ import locale
 import libs
 
 
-version="0.1.2beta"
+version="0.1.3beta"
 
 def wave2MIDI(filepath,basicFreq,tempo,lim,pitchwheel):
     ticklength = 50
