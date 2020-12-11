@@ -18,7 +18,7 @@ import libs
 
 version="0.1.3beta"
 
-def wave2MIDI(filepath,basicFreq,tempo,lim,pitchwheel):
+def wave2MIDI(filepath,basicFreq,tempo,lim,pitchwheel,plaintext):
     ticklength = 50
     def _print(s,*args,**kwargs):
         WorkDict["outputBuffer"].append(s)
@@ -45,7 +45,7 @@ def wave2MIDI(filepath,basicFreq,tempo,lim,pitchwheel):
             print(i18n.t("generic.conversion.read.dftdata"))
             with open(url2pathname(filepath[8:]),"rb") as DB:
                 DFTBitStream = DB.read()
-            DFTData, basicFreq, NFOffset, TicksPerSecond = libs.melacodec.decode(DFTBitStream)
+            DFTData, basicFreq, NFOffset, TicksPerSecond, version = libs.melacodec.decode(DFTBitStream)
             ticklength=1000/TicksPerSecond
         else:
             stderr(i18n.t("generic.conversion.failed.file_unsupported",extension=extension))
@@ -64,7 +64,7 @@ def wave2MIDI(filepath,basicFreq,tempo,lim,pitchwheel):
     except Exception as e:
         stderr(str(e))
 
-def wave2DFTData(filepath,basicFreq,tempo,lim,pitchwheel):
+def wave2DFTData(filepath,basicFreq,tempo,lim,pitchwheel,plaintext):
     ticklength = 50
     def _print(s,*args,**kwargs):
         WorkDict["outputBuffer"].append(s)
@@ -91,12 +91,12 @@ def wave2DFTData(filepath,basicFreq,tempo,lim,pitchwheel):
         DFTData=DFT128(PCM,framerate,basicFreq=int(basicFreq),progressbarObject=progressbar,ticklength=ticklength)
         print(i18n.t("generic.conversion.dft128.complete"))
         print(i18n.t("generic.conversion.generate.dftdata"))
-        patt = libs.melacodec.encode(DFTData, None, TicksPerSecond = 1/ticklength*1000, BasicFreq = int(basicFreq))
+        patt = libs.melacodec.encode(DFTData, [1,1,0], TicksPerSecond = 1/ticklength*1000, BasicFreq = int(basicFreq), BitsPerData = 8, PlainText=plaintext)
         #print(f"音符数：{notec}")
         progressbar.setProperty("value",0.0)
         progressbar.setProperty("indeterminate",True)
     
-        outputpath = os.path.join(os.path.dirname(__file__),inputfname+".mela")
+        outputpath = os.path.join(os.path.dirname(__file__),inputfname+("_text" if plaintext else "")+".mela")
         with open(outputpath, "wb") as outf:
             outf.write(patt)
         progressbar.setProperty("indeterminate",False)
@@ -167,14 +167,14 @@ class Bridge(QObject):
         return i18n.t(text, *args, **kwargs)
 
 
-    @Slot(str,str,str,int,bool,result=bool)
-    def wave2MIDIWithoutProgressbar(self,filepath,basicFreq,tempo,lim,pitchwheel):
-        s = threading.Thread(target = wave2MIDI, args = (filepath,basicFreq,tempo,lim,pitchwheel))
+    @Slot(str,str,str,int,bool,bool,result=bool)
+    def wave2MIDIWithoutProgressbar(self,filepath,basicFreq,tempo,lim,pitchwheel,plaintext):
+        s = threading.Thread(target = wave2MIDI, args = (filepath,basicFreq,tempo,lim,pitchwheel,plaintext))
         s.start()
         
-    @Slot(str,str,str,int,bool,result=bool)
-    def wave2DataWithoutProgressbar(self,filepath,basicFreq,tempo,lim,pitchwheel):
-        s = threading.Thread(target = wave2DFTData, args = (filepath,basicFreq,tempo,lim,pitchwheel))
+    @Slot(str,str,str,int,bool,bool,result=bool)
+    def wave2DataWithoutProgressbar(self,filepath,basicFreq,tempo,lim,pitchwheel,plaintext):
+        s = threading.Thread(target = wave2DFTData, args = (filepath,basicFreq,tempo,lim,pitchwheel,plaintext))
         s.start()
     @Slot(result=str)
     def getT(self):

@@ -1,0 +1,35 @@
+<?xml version="1.0" ?>
+<PianoFromAbove>
+    <Visual KeysShown="1" AlwaysShowControls="0" AssociateFiles="0" FirstKey="21" LastKey="108">
+        <Colors>
+            <Color R="63" G="63" B="63" />
+            <Color R="127" G="127" B="127" />
+            <Color R="191" G="191" B="191" />
+            <Color R="255" G="255" B="255" />
+            <Color R="255" G="255" B="255" />
+            <Color R="191" G="191" B="191" />
+            <Color R="127" G="127" B="127" />
+            <Color R="63" G="63" B="63" />
+            <Color R="255" G="204" B="51" />
+            <Color R="51" G="180" B="255" />
+            <Color R="255" G="51" B="51" />
+            <Color R="51" G="255" B="177" />
+            <Color R="255" G="51" B="204" />
+            <Color R="78" G="255" B="51" />
+            <Color R="153" G="51" B="255" />
+            <Color R="231" G="255" B="51" />
+        </Colors>
+        <BkgColor R="0" G="0" B="0" />
+    </Visual>
+    <Audio MIDIOutDevice="OmniMIDI" />
+    <Video Renderer="0" ShowFPS="0" LimitFPS="1" />
+    <Controls FwdBackSecs="3" SpeedUpPct="10">
+        <KeyboardMap />
+    </Controls>
+    <Library AlwaysAdd="0" SortCol="1">
+        <Sources>
+        </Sources>
+    </Library>
+    <Playback LearnMode="1" Mute="0" Volume="1" NoteSpeed="1" Metronome="0" />
+    <View Library="0" Controls="1" Keyboard="1" NoteLabels="0" OnTop="0" OffsetX="0" OffsetY="0" ZoomX="1" MainLeft="-11" MainTop="-11" MainWidth="640" MainHeight="469" LibWidth="263" />
+</PianoFromAbove>

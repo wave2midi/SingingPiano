@@ -30,7 +30,7 @@ vector<complex<double> > computeDft(const vector<complex<double> >& input) {
 
 
 /*
- * (Alternate implementation using only real numbers.)
+ * (Alternative implementation using only real numbers.)
  * Computes the discrete Fourier transform (DFT) of the given complex vector.
  * All the array arguments must have the same length.
  */

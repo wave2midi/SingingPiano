@@ -27,6 +27,7 @@
 		"conversion.generate.midi.start":"Generating MIDI object...",
 		"conversion.generate.midi.complete":"Writing MIDI file, notes:%{notecount}",
 		"conversion.generate.dftdata":"Encoding Equal-Tempered data...",
-		"conversion.wave2midi.error":"Conversion failed due to the following error(s): \n%{error}"
+		"conversion.wave2midi.error":"Conversion failed due to the following error(s): \n%{error}",
+		"option.plain_text_storage":"Plain text DFT data storage"
 	}
 }

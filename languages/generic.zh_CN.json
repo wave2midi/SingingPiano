@@ -27,7 +27,8 @@
 		"conversion.generate.midi.start":"生成MIDI对象...",
 		"conversion.generate.midi.complete":"写入MIDI文件，音符数：%{notecount}",
 		"conversion.generate.dftdata":"编码平均律数据...",
-		"conversion.wave2midi.error":"转换被取消，由于发生如下错误: \n%{error}"
+		"conversion.wave2midi.error":"转换被取消，由于发生如下错误: \n%{error}",
+		"option.plain_text_storage":"纯文本存储DFT数据"
 		
 	}
 }

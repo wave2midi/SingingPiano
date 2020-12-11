@@ -201,11 +201,11 @@ Rectangle {
 
                 CheckBox {
                     id: checkBox1
-                    text: qsTr("Use recorder in MIDI output")
+                    text: qsTr("Plain text to storage Data")
 					Layout.preferredHeight: global.height / 480 * 48
                     Layout.preferredWidth: 250
-                    checked:true
-                    enabled:false
+                    checked:false
+                    enabled:true
                 }
             }
         }
@@ -275,7 +275,7 @@ Rectangle {
                 onClicked:{
                     buttons.enabled=false
                     console.log("qml:converting to DFTData")
-                    con.wave2DataWithoutProgressbar(wavpath.text,comboBox.currentText,textField.text,slider.value,checkBox.checked)
+                    con.wave2DataWithoutProgressbar(wavpath.text,comboBox.currentText,textField.text,slider.value,checkBox.checked,checkBox1.checked)
                 }
             }
 
@@ -287,7 +287,7 @@ Rectangle {
                 onClicked:{
                     buttons.enabled=false
                     console.log("qml:converting to midi")
-                    con.wave2MIDIWithoutProgressbar(wavpath.text,comboBox.currentText,textField.text,slider.value,checkBox.checked)
+                    con.wave2MIDIWithoutProgressbar(wavpath.text,comboBox.currentText,textField.text,slider.value,checkBox.checked,checkBox1.checked)
                 }
             }
         }
@@ -299,7 +299,8 @@ Rectangle {
         button.text=con.t("generic.operation.convert_to_dft128")
         button2.text=con.t("generic.operation.convert_to_midi")
         hint3.text=con.t("generic.title.output")
-        checkBox1.text=con.t("generic.option.pchange_recorder")
+        //checkBox1.text=con.t("generic.option.pchange_recorder")
+		checkBox1.text=con.t("generic.option.plain_text_storage")
         checkBox.text=con.t("generic.option.pitchwheel")
         element4.text=con.t("generic.title.tempo")
         element.text=con.t("generic.option.freq.standard")
