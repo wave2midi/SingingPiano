@@ -76,7 +76,7 @@ if __name__ == "__main__":
         for k in range(len(X[0])):
             f = freqtable[k]*BasicFreq/440
             this_n = dataConvert(X[i][k])#*sqrt(f)/100
-            X[i][k] = this_n if not (f>8000 or f<20) else 0
+            X[i][k] = this_n if not (f>4000 or f<20) else 0
     T=len(X)*ticklength
     
     stream = pyaudio.PyAudio().open(format=pyaudio.paFloat32,channels=1,rate=fs,output=True)

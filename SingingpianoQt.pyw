@@ -39,7 +39,7 @@ def wave2MIDI(filepath,basicFreq,tempo,lim,pitchwheel,plaintext):
             progressbar.setProperty("value",0.0)
     
             print(i18n.t("generic.conversion.dft128.start"))
-            DFTData=DFT128(PCM,framerate,basicFreq=float(basicFreq),progressbarObject=progressbar)
+            DFTData=DFT128(PCM,framerate,basicFreq=float(basicFreq),ticklength=ticklength,progressbarObject=progressbar)
             print(i18n.t("generic.conversion.dft128.complete"))
         elif extension.lower() == ".mela":
             print(i18n.t("generic.conversion.read.dftdata"))
